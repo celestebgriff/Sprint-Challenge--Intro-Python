@@ -1,6 +1,14 @@
 # Create a class to hold a city location. Call the class "City". It should have
 # fields for name, lat and lon (representing latitude and longitude).
 
+import csv
+
+class City:
+    def __init__(self, name, lat, lon):
+        self.name = name
+        self.lat = lat
+        self.lon = lon
+
 
 # We have a collection of US cities with population over 750,000 stored in the
 # file "cities.csv". (CSV stands for "comma-separated values".)
@@ -17,17 +25,22 @@
 cities = []
 
 def cityreader(cities=[]):
-  # TODO Implement the functionality to read from the 'cities.csv' file
-  # For each city record, create a new City instance and add it to the 
-  # `cities` list
-    
-    return cities
+  # opening csv
+  with open("src/cityreader/cities.csv") as cfile:
+    #reading csv
+    data = csv.DictReader(cfile, delimiter=",")
+    # Going through rows and adding to cities
+    for row in data:
+      city = City(row["city"], float(row["lat"]), float(row["lng"]))
+      cities.append(city)
+  return cities
 
 cityreader(cities)
 
 # Print the list of cities (name, lat, lon), 1 record per line.
 for c in cities:
-    print(c)
+  # Printing name, lat, lon for the cities instance of cityreader
+  print(c.name, c.lat, c.lon)
 
 # STRETCH GOAL!
 #
@@ -59,6 +72,9 @@ for c in cities:
 # Salt Lake City: (40.7774,-111.9301)
 
 # TODO Get latitude and longitude values from the user
+# splitting up lat and lon and removing comma removing comma
+lat1, lon1 = input("Enter lat,lon:").replace(" ", "").split(",")
+lat2, lon2 = input("Enter lat,lon:").replace(" ", "").split(",")
 
 def cityreader_stretch(lat1, lon1, lat2, lon2, cities=[]):
   # within will hold the cities that fall within the specified region
@@ -68,4 +84,19 @@ def cityreader_stretch(lat1, lon1, lat2, lon2, cities=[]):
   # Go through each city and check to see if it falls within 
   # the specified coordinates.
 
+  # Ensure lat and lon values are floats
+  lat1, lon1, lat2, lon2 = float(lat1), float(lon1), float(lat2), float(lon2)
+
+  # sorting into ascending order by normalize the coordinates
+  # results in lat1,lon1 representing the top right corner of the square
+  lat1, lat2 = sorted([lat1, lat2])
+  lon1, lon2 = sorted([lon1, lon2])
+
+  # Go through each city and check to see if it falls within the coordinates specified.
+  for city in cities:
+    if lat1 <= city.lat <= lat2 and lon1 <= city.lon <= lon2:
+      within.append(city)
+
   return within
+
+
